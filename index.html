@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🥺 Aygzie's Heartfelt Sorry</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;500;600&family=Dancing+Script:wght@600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Canvas Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #A1C4FD 0%, #C2E9FB 35%, #FBC2EB 70%, #A6C1EE 100%);
+      --card-bg: rgba(255, 255, 255, 0.88);
+      --primary-pink: #FF6B8B;
+      --primary-blue: #4A90E2;
+      --accent-purple: #8A2BE2;
+      --soft-pink: #FFF0F5;
+      --soft-blue: #F0F8FF;
+      --text-dark: #2D3748;
+      --text-muted: #64748B;
+      --border-color: rgba(255, 182, 193, 0.6);
+      --shadow: 0 12px 35px -5px rgba(255, 107, 139, 0.25), 0 8px 15px -6px rgba(74, 144, 226, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg-gradient);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-dark);
+    }
+
+    /* Animated Ambient Gradient Background */
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Floating Animated Hearts/Bubbles BG Effect */
+    .bg-animation {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .bg-bubble {
+      position: absolute;
+      list-style: none;
+      display: block;
+      width: 20px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.35);
+      bottom: -150px;
+      border-radius: 50%;
+      animation: floatUp 20s infinite linear;
+    }
+
+    .bg-bubble:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+    .bg-bubble:nth-child(2) { left: 10%; width: 30px; height: 30px; animation-delay: 2s; animation-duration: 12s; }
+    .bg-bubble:nth-child(3) { left: 70%; width: 25px; height: 25px; animation-delay: 4s; }
+    .bg-bubble:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
+    .bg-bubble:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
+    .bg-bubble:nth-child(6) { left: 85%; width: 110px; height: 110px; animation-delay: 3s; }
+    .bg-bubble:nth-child(7) { left: 35%; width: 90px; height: 90px; animation-delay: 7s; }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.8; border-radius: 50%; }
+      100% { transform: translateY(-1200px) rotate(720deg); opacity: 0; border-radius: 30%; }
+    }
+
+    .slider-container {
+      width: 100vw;
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Floating Navigation Indicator Dot Track */
+    .nav-dots {
+      position: fixed;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 100;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.6);
+      border: 2px solid var(--primary-pink);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .dot.active {
+      background: var(--primary-pink);
+      transform: scale(1.4);
+      box-shadow: 0 0 10px rgba(255, 107, 139, 0.8);
+    }
+
+    /* Each Fullscreen Section */
+    .section {
+      width: 100vw;
+      height: 100vh;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+      position: relative;
+    }
+
+    /* Individual Card Box with Glassmorphism & Entrance Animation */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 28px;
+      padding: 32px 26px;
+      box-shadow: var(--shadow);
+      border: 2px solid var(--border-color);
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      transform: translateY(30px) scale(0.95);
+      opacity: 0;
+      transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Trigger animations when section is active */
+    .section.active .card {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .card-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 1.5rem;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(45deg, var(--primary-pink), var(--primary-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Scroll Down Cue Arrow */
+    .scroll-hint {
+      position: absolute;
+      bottom: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.9rem;
+      color: #FFFFFF;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      cursor: pointer;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-50%); }
+    }
+
+    /* ---------------- 0. Intro Section ---------------- */
+    .intro-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 2.6rem;
+      background: linear-gradient(135deg, #FF6B8B 0%, #4A90E2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+      animation: pulseGlow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseGlow {
+      from { filter: drop-shadow(0 0 2px rgba(255,107,139,0.2)); }
+      to { filter: drop-shadow(0 0 10px rgba(74,144,226,0.6)); }
+    }
+
+    .intro-sub {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.5;
+    }
+
+    /* ---------------- 1. Heartfelt Letter Card ---------------- */
+    .letter-card {
+      background: rgba(255, 253, 249, 0.92);
+      border: 2px solid #FEEBC8;
+    }
+
+    .envelope-btn {
+      background: linear-gradient(135deg, #FF7E5F, #FEB47B);
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(255, 126, 95, 0.35);
+      transition: all 0.3s ease;
+      animation: pulseBtn 2s infinite;
+    }
+
+    @keyframes pulseBtn {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .envelope-btn:hover {
+      transform: scale(1.08) !important;
+      box-shadow: 0 8px 20px rgba(255, 126, 95, 0.5);
+    }
+
+    .letter-paper {
+      display: none;
+      background: repeating-linear-gradient(#FFFDF9, #FFFDF9 31px, #E2E8F0 32px);
+      line-height: 32px;
+      padding: 22px;
+      border-radius: 16px;
+      border-left: 4px solid var(--primary-pink);
+      text-align: left;
+      width: 100%;
+      animation: unfold 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes unfold {
+      from { transform: scaleY(0); opacity: 0; }
+      to { transform: scaleY(1); opacity: 1; }
+    }
+
+    .letter-paper p {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      color: #2C5282;
+      margin-bottom: 12px;
+      line-height: 32px;
+    }
+
+    .letter-paper .signature {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.7rem;
+      color: var(--primary-pink);
+      text-align: right;
+      margin-top: 15px;
+    }
+
+    /* ---------------- 2. Anger-O-Meter ---------------- */
+    .anger-wrapper {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .anger-emoji {
+      font-size: 4.8rem;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    }
+
+    .meter-bar {
+      width: 100%;
+      height: 26px;
+      background: var(--soft-pink);
+      border-radius: 13px;
+      overflow: hidden;
+      border: 2px solid var(--border-color);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .meter-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #FF6B8B 0%, #4A90E2 100%);
+      border-radius: 11px;
+      transition: width 0.5s ease-out;
+    }
+
+    .cool-btn {
+      background: linear-gradient(135deg, var(--primary-pink), var(--primary-blue));
+      color: white;
+      border: none;
+      padding: 12px 26px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(255, 107, 139, 0.3);
+      transition: all 0.2s;
+    }
+
+    .cool-btn:active { transform: scale(0.95); }
+    .cool-btn:disabled { background: #CBD5E0; cursor: not-allowed; box-shadow: none; }
+
+    /* ---------------- 3. Whack-A-Sorry Game ---------------- */
+    .whack-status {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 15px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      width: 100%;
+    }
+
+    .hole {
+      background: linear-gradient(135deg, #FFF0F5 0%, #E6F0FA 100%);
+      aspect-ratio: 1;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.3rem;
+      cursor: pointer;
+      border: 2px dashed var(--border-color);
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .hole:active { transform: scale(0.88); }
+    .hole.active {
+      background: linear-gradient(135deg, #FFE4E1 0%, #D4E6F1 100%);
+      animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border-style: solid;
+      border-color: var(--primary-pink);
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.7); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    /* ---------------- 4. Scratch Card ---------------- */
+    .scratch-container {
+      position: relative;
+      width: 100%;
+      height: 140px;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .scratch-secret {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, #FFF0F5, #E6F0FA);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      text-align: center;
+      border: 2px dashed var(--primary-pink);
+      border-radius: 18px;
+    }
+
+    .scratch-secret p {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.55rem;
+      background: linear-gradient(45deg, var(--primary-pink), var(--primary-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+    }
+
+    canvas.scratch-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      cursor: pointer;
+      z-index: 2;
+      border-radius: 18px;
+    }
+
+    /* ---------------- 5. Bribery Checklist ---------------- */
+    .bribery-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .bribe-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, rgba(255, 240, 245, 0.8), rgba(240, 248, 255, 0.8));
+      padding: 14px 16px;
+      border-radius: 16px;
+      cursor: pointer;
+      text-align: left;
+      border: 1px solid var(--border-color);
+      transition: all 0.25s ease;
+    }
+
+    .bribe-item:hover {
+      transform: translateX(5px);
+      background: linear-gradient(135deg, #FFE4E1, #D4E6F1);
+    }
+
+    .bribe-item input[type="checkbox"] {
+      width: 20px; height: 20px;
+      accent-color: var(--primary-pink);
+      cursor: pointer;
+    }
+
+    .bribe-item label {
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      flex-grow: 1;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #4A90E2, #8A2BE2);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      margin-top: 22px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(74, 144, 226, 0.4);
+      transition: all 0.3s ease;
+      animation: pulseBtn 2s infinite;
+    }
+
+    .submit-btn:hover {
+      transform: scale(1.08) !important;
+      box-shadow: 0 8px 20px rgba(74, 144, 226, 0.6);
+    }
+
+    /* ---------------- 6. Final Sign-Off ---------------- */
+    .finale-card {
+      background: rgba(255, 255, 255, 0.92);
+      border: 2px solid var(--primary-pink);
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+      position: relative;
+      min-height: 50px;
+      width: 100%;
+    }
+
+    .yes-btn {
+      background: linear-gradient(135deg, #42E695, #3BB2B8);
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.15rem;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(66, 230, 149, 0.4);
+      transition: all 0.3s ease;
+      animation: pulseBtn 2s infinite;
+    }
+
+    .yes-btn:hover {
+      transform: scale(1.08) !important;
+      box-shadow: 0 8px 20px rgba(66, 230, 149, 0.6);
+    }
+
+    .no-btn {
+      background: linear-gradient(135deg, #FF6B8B, #FF8E53);
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.15rem;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(255, 107, 139, 0.3);
+      position: absolute;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .signature-section {
+      display: none;
+      margin-top: 20px;
+      animation: scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes scaleUp {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .seal-stamp {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.2rem;
+      color: #3BB2B8;
+      border: 3px dashed #3BB2B8;
+      display: inline-block;
+      padding: 10px 28px;
+      border-radius: 50px;
+      transform: rotate(-3deg);
+      box-shadow: 0 4px 10px rgba(59, 178, 184, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Background Animated Bubbles -->
+  <ul class="bg-animation">
+    <li class="bg-bubble"></li>
+    <li class="bg-bubble"></li>
+    <li class="bg-bubble"></li>
+    <li class="bg-bubble"></li>
+    <li class="bg-bubble"></li>
+    <li class="bg-bubble"></li>
+    <li class="bg-bubble"></li>
+  </ul>
+
+  <!-- Floating Right Navigation Dots -->
+  <div class="nav-dots" id="navDots">
+    <div class="dot active" onclick="scrollToSection(0)"></div>
+    <div class="dot" onclick="scrollToSection(1)"></div>
+    <div class="dot" onclick="scrollToSection(2)"></div>
+    <div class="dot" onclick="scrollToSection(3)"></div>
+    <div class="dot" onclick="scrollToSection(4)"></div>
+    <div class="dot" onclick="scrollToSection(5)"></div>
+    <div class="dot" onclick="scrollToSection(6)"></div>
+  </div>
+
+  <div class="slider-container" id="sliderContainer">
+
+    <!-- Section 0: Title Cover -->
+    <div class="section active">
+      <div class="card">
+        <h1 class="intro-title">Aygzie Is Bery Sorry!</h1>
+        <p class="intro-sub">Please see this before executing me Bellie 😭</p>
+      </div>
+      <div class="scroll-hint" onclick="scrollToSection(1)">
+        <span>Scroll Down</span>
+        <span>↓</span>
+      </div>
+    </div>
+
+    <!-- Section 1: Note -->
+    <div class="section">
+      <div class="card letter-card">
+        <div class="card-title">✉️ <span class="gradient-text" style="background: linear-gradient(45deg, #FF7E5F, #FEB47B); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">A Note From My Heart</span></div>
+        <div class="envelope-wrapper" id="envelopeWrapper">
+          <button class="envelope-btn" onclick="openLetter()">📩 Tap to Open Aygzie's Letter</button>
+        </div>
+        <div class="letter-paper" id="letterPaper">
+          <p>My Love,</p>
+          <p>It is never in my heart to hurt you. You deserve the world yet I always fail to deliver, each time I do it breaks me. Yet no matter how many times I can never make it my last.</p>
+          <p>To me you're the sun to my sunshine, the cloud to my rain, the moon to my lovely night and the remedy to my pain. I'm genuinely sorry my little raccoon, and I want to make things right. You told me no gifts so have this instead.</p>
+          <div class="signature">With all my love, Your Aygzie ❤️</div>
+        </div>
+      </div>
+      <div class="scroll-hint" onclick="scrollToSection(2)">
+        <span>Next Section</span>
+        <span>↓</span>
+      </div>
+    </div>
+
+    <!-- Section 2: Anger Meter -->
+    <div class="section">
+      <div class="card">
+        <div class="card-title">🔥 <span class="gradient-text">Anger-O-Meter</span></div>
+        <div class="anger-wrapper">
+          <div class="anger-emoji" id="angerEmoji">😡</div>
+          <div class="meter-bar">
+            <div class="meter-fill" id="meterFill"></div>
+          </div>
+          <button class="cool-btn" id="coolBtn" onclick="coolDown()">Slap Your Boyfriend!🤚 (-20%)</button>
+        </div>
+      </div>
+      <div class="scroll-hint" onclick="scrollToSection(3)">
+        <span>Next Section</span>
+        <span>↓</span>
+      </div>
+    </div>
+
+    <!-- Section 3: Whack Game -->
+    <div class="section">
+      <div class="card">
+        <div class="card-title">🔨 <span class="gradient-text">Whack-A-Stupid-Aygzie Game</span></div>
+        <div class="whack-status">
+          <span>Beat your boyfriend for 5 mins!</span>
+          <span id="gameScore">Score: 0 / 5</span>
+        </div>
+        <div class="grid" id="whackGrid">
+          <div class="hole" onclick="whack(0)">💨</div>
+          <div class="hole" onclick="whack(1)">💨</div>
+          <div class="hole" onclick="whack(2)">💨</div>
+          <div class="hole" onclick="whack(3)">💨</div>
+          <div class="hole" onclick="whack(4)">💨</div>
+          <div class="hole" onclick="whack(5)">💨</div>
+        </div>
+      </div>
+      <div class="scroll-hint" onclick="scrollToSection(4)">
+        <span>Next Section</span>
+        <span>↓</span>
+      </div>
+    </div>
+
+    <!-- Section 4: Scratch Secret -->
+    <div class="section">
+      <div class="card">
+        <div class="card-title">✨ <span class="gradient-text">Scratch for a Secret Message</span></div>
+        <div class="scratch-container">
+          <div class="scratch-secret">
+            <p>"I promise to give you endless hugs, kisses, your favorite snacks and a 'Your boyfriend will do anything' coupon"</p>
+          </div>
+          <canvas id="scratchCanvas" class="scratch-canvas"></canvas>
+        </div>
+      </div>
+      <div class="scroll-hint" onclick="scrollToSection(5)">
+        <span>Next Section</span>
+        <span>↓</span>
+      </div>
+    </div>
+
+    <!-- Section 5: Bribery List -->
+    <div class="section">
+      <div class="card">
+        <div class="card-title">🍩 <span class="gradient-text">Peace Offering Guarantees</span></div>
+        <div class="bribery-list">
+          <div class="bribe-item" onclick="toggleCheckbox(this)">
+            <input type="checkbox" id="b1" onclick="event.stopPropagation()">
+            <label for="b1">One kinderjoy everyday for a week!🍫</label>
+          </div>
+          <div class="bribe-item" onclick="toggleCheckbox(this)">
+            <input type="checkbox" id="b2" onclick="event.stopPropagation()">
+            <label for="b2">Your Favourite want to read Book!📚</label>
+          </div>
+          <div class="bribe-item" onclick="toggleCheckbox(this)">
+            <input type="checkbox" id="b3" onclick="event.stopPropagation()">
+            <label for="b3">Hugs, Kisses, I Love You❤️s for eternity!</label>
+          </div>
+          <div class="bribe-item" onclick="toggleCheckbox(this)">
+            <input type="checkbox" id="b4" onclick="event.stopPropagation()">
+            <label for="b4">All Of The Above ❤️❤️❤️❤️!</label>
+          </div>
+        </div>
+        
+        <button class="submit-btn" onclick="scrollToSection(6)">Accept Terms & Continue ➡️</button>
+
+      </div>
+      <div class="scroll-hint" onclick="scrollToSection(6)">
+        <span>Final Verdict</span>
+        <span>↓</span>
+      </div>
+    </div>
+
+    <!-- Section 6: Finale -->
+    <div class="section">
+      <div class="card finale-card">
+        <h2 class="card-title" style="font-size: 1.8rem;"><span class="gradient-text">Will You Forgive Me?</span></h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Sign the official pardon decree below.</p>
+        
+        <div class="btn-group" id="btnGroup">
+          <button class="yes-btn" onclick="forgiveMe()">YES, I Forgive You! ❤️</button>
+          <button class="no-btn" id="noBtn" onmouseover="dodgeNo()" onclick="dodgeNo()">NO 😤</button>
+        </div>
+
+        <div class="signature-section" id="signatureSection">
+          <div class="seal-stamp">OFFICIALLY FORGIVEN ✨</div>
+          <p style="margin-top: 15px; font-size: 0.85rem; color: #64748B;">Signed & Sealed with Love</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /* ---------------- Vertical Slider Navigation & Scroll Trigger ---------------- */
+    const container = document.getElementById('sliderContainer');
+    const dots = document.querySelectorAll('.dot');
+    const sections = document.querySelectorAll('.section');
+
+    function scrollToSection(index) {
+      const sectionHeight = window.innerHeight;
+      container.scrollTo({
+        top: index * sectionHeight,
+        behavior: 'smooth'
+      });
+    }
+
+    container.addEventListener('scroll', () => {
+      const sectionHeight = window.innerHeight;
+      const currentIndex = Math.round(container.scrollTop / sectionHeight);
+      
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === currentIndex);
+      });
+
+      sections.forEach((sec, idx) => {
+        sec.classList.toggle('active', idx === currentIndex);
+      });
+    });
+
+    /* ---------------- Heartfelt Letter Script ---------------- */
+    function openLetter() {
+      document.getElementById('envelopeWrapper').style.display = 'none';
+      document.getElementById('letterPaper').style.display = 'block';
+    }
+
+    /* ---------------- Anger-O-Meter Script ---------------- */
+    let angerLevel = 100;
+    const angerEmojis = ['😡', '😠', '😤', '🥺', '🥰'];
+    
+    function coolDown() {
+      if (angerLevel > 0) {
+        angerLevel -= 20;
+        document.getElementById('meterFill').style.width = angerLevel + '%';
+        
+        let emojiIdx = Math.min(Math.floor((100 - angerLevel) / 25), 4);
+        const emojiEl = document.getElementById('angerEmoji');
+        emojiEl.innerText = angerEmojis[emojiIdx];
+        emojiEl.style.transform = 'scale(1.25) rotate(5deg)';
+        setTimeout(() => emojiEl.style.transform = 'scale(1) rotate(0deg)', 200);
+
+        if (angerLevel === 0) {
+          document.getElementById('coolBtn').disabled = true;
+          document.getElementById('coolBtn').innerText = 'Fully Cooled Down! ❤️';
+        }
+      }
+    }
+
+    /* ---------------- Whack-A-Sorry Script ---------------- */
+    let score = 0;
+    let activeHole = -1;
+    let gameTimer = null;
+
+    function startWhackGame() {
+      if (score >= 5) return;
+      gameTimer = setInterval(() => {
+        const holes = document.querySelectorAll('.hole');
+        holes.forEach(h => { h.classList.remove('active'); h.innerText = '💨'; });
+
+        activeHole = Math.floor(Math.random() * 6);
+        holes[activeHole].classList.add('active');
+        holes[activeHole].innerText = '🥺';
+      }, 900);
+    }
+
+    function whack(index) {
+      if (index === activeHole && score < 5) {
+        score++;
+        document.getElementById('gameScore').innerText = `Score: ${score} / 5`;
+        const holes = document.querySelectorAll('.hole');
+        holes[index].innerText = '💖';
+        holes[index].classList.remove('active');
+        activeHole = -1;
+
+        if (score === 5) {
+          clearInterval(gameTimer);
+          document.getElementById('gameScore').innerText = 'You beat your boyfriend near death! 🎉';
+        }
+      }
+    }
+
+    startWhackGame();
+
+    /* ---------------- Scratch Card Script with Blue/Pink Gradient Metallic Overlay ---------------- */
+    const canvas = document.getElementById('scratchCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function initScratchCard() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+
+      // Blue Pink Metallic Scratch Gradient
+      const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      grad.addColorStop(0, '#B0C4DE');
+      grad.addColorStop(0.5, '#F8C8DC');
+      grad.addColorStop(1, '#A0C4FF');
+
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.font = 'bold 15px Fredoka, sans-serif';
+      ctx.fillStyle = '#5A6B82';
+      ctx.textAlign = 'center';
+      ctx.fillText('Scratch here with your finger/mouse!', canvas.width / 2, canvas.height / 2 + 5);
+    }
+
+    let isDrawing = false;
+
+    function scratch(e) {
+      if (!isDrawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+      const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, 22, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    canvas.addEventListener('mousedown', () => isDrawing = true);
+    canvas.addEventListener('mouseup', () => isDrawing = false);
+    canvas.addEventListener('mousemove', scratch);
+
+    canvas.addEventListener('touchstart', () => isDrawing = true);
+    canvas.addEventListener('touchend', () => isDrawing = false);
+    canvas.addEventListener('touchmove', scratch);
+
+    window.addEventListener('load', initScratchCard);
+
+    /* ---------------- Bribery Checklist Script ---------------- */
+    function toggleCheckbox(container) {
+      const checkbox = container.querySelector('input[type="checkbox"]');
+      checkbox.checked = !checkbox.checked;
+    }
+
+    /* ---------------- Finale Button Script ---------------- */
+    function dodgeNo() {
+      const btn = document.getElementById('noBtn');
+      const x = Math.random() * 220 - 110;
+      const y = Math.random() * 120 - 60;
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    function forgiveMe() {
+      // 1. Hide buttons and show stamp instantly
+      document.getElementById('btnGroup').style.display = 'none';
+      document.getElementById('signatureSection').style.display = 'block';
+
+      // 2. Explode Confetti
+      confetti({
+        particleCount: 150,
+        spread: 90,
+        origin: { y: 0.6 },
+        colors: ['#FF6B8B', '#4A90E2', '#42E695', '#FFD700', '#FBC2EB']
+      });
+
+      // 3. Gather her exact bribery selections
+      const selectionData = {
+        b1: document.getElementById('b1').checked,
+        b2: document.getElementById('b2').checked,
+        b3: document.getElementById('b3').checked,
+        b4: document.getElementById('b4').checked
+      };
+
+      // 4. Silently send data to your Google Sheet in the background
+      // Replace 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE' with your deployed web app URL from Google Apps Script
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbyqkcWYrg5j35affwPj4Fw-AN9_zQlJ5Ks0bUvbvnMU-Pj31rLfdZGtMpHkoVlws4vK/exec'; 
+
+      fetch(scriptURL, {
+        method: 'POST',
+        mode: 'no-cors', // Prevents CORS errors on static hosting
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(selectionData)
+      }).catch(error => {
+        console.error('Error logging response:', error);
+      });
+    }
+  </script>
+
+</body>
+</html>
